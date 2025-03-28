@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+
+    <application>
+
+        <!-- 禁用 Facebook SDK 的自动初始化 -->
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+
+        <!--        禁用自动事件搜集-->
+        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled" android:value="false"/>
+        <!--        禁用 SDK 自动初始化功能-->
+        <meta-data android:name="com.facebook.sdk.AutoInitEnabled" android:value="false"/>
+
+    </application>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+</manifest>
