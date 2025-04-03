@@ -171,6 +171,90 @@ yyangModule.requestTrackingAuth((ret) => {
 });
 ```
 
+
+
+### 6、Uni-App 跳转到原生页面
+
+yyangModule.pushNativePage(params, callback);
+参数说明 (params包含以下参数，callback可选)
+
+| 参数名    |   类型 | 是否必填 |                           说明 |
+| --------- | -----: | -------: | -----------------------------: |
+| pageName  | String |       是 | 原生提供的页面（如 'YYSwift'） |
+| pageTitle | String |       是 |               扩展参数，页面表 |
+
+示例代码：
+
+```javascript
+const params = {
+		pageName: 'YYSwift', //必传，页面名称，如 YYSwift，已开发存在的页面
+		pageTitle: 'SwiftUI Title', // 可选， 页面标题（导航栏标题）
+}
+/**
+* pushNativePage
+* 跳转到原生页面（如OC项目开发SwiftUI页面）
+*
+* @param callback 可选，回调函数，用于接收方法执行结果反馈，格式为 (ret) => {  }。
+* ret = { "error": 200, "message": "跳转成功", 非200, 跳转异常等}
+*
+*/
+yyangModule.pushNativePage(params, (ret) => {
+	console.log('~~~ yyangModule.pushNativePage=' + ret)
+
+})
+```
+
+### 7、 UTS插件 获取设备电量
+
+getBatteryInfo
+
+示例代码：
+
+```javascript
+import {
+		getBatteryInfo,
+		getBatteryLevel,
+		getDeviceInfo
+	} from "@/uni_modules/yy-gyj-plugin"; //UTS插件
+
+getBatteryInfo({
+    success: (res) => {
+      console.log('成功获取电量信息:', res);
+      this.batteryLevel = res.level;
+      this.isCharging = res.isCharging;
+    },
+    fail: (err) => {
+      console.error('获取失败:', err);
+    },
+    complete: (res) => {
+      console.log('调用完成');
+    }
+})
+
+```
+
+
+
+### 8、 UTS插件 获取设备信息（iPhone iOS18.2.1）
+
+getDeviceInfo
+
+示例代码：
+
+```javascript
+import {
+		getBatteryInfo,
+		getBatteryLevel,
+		getDeviceInfo
+	} from "@/uni_modules/yy-gyj-plugin"; //UTS插件
+
+const model = getDeviceInfo()
+console.log('model model===', model) //iPhone iOS18.2.1
+this.devInfo = model;
+```
+
+
+
 ## 四、插件开发教程
 
 ### 1、[Android 插件开发教程](https://nativesupport.dcloud.net.cn/NativePlugin/course/android.html)
