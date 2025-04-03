@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "DCUniDefine.h"
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface YYManager : NSObject
@@ -159,6 +160,17 @@ https://developers.facebook.com/docs/app-events/reference#standard-event-paramet
  */
 + (void)requestTrackingAuth:(nullable UniModuleKeepAliveCallback)callback;
 
+/**
+ * pushNativePage、
+ * uni-app 跳转到原生页面（OC项目开发SwiftUI页面）
+ ** @param params 必传，一个对象，包含以下属性：
+ *               - pageName: 必传，页面名称，如 YYSwift，已开发存在的页面
+ *               - pageTitle   可选， 页面标题（导航栏标题）
+ * @param callback 可选，回调函数，用于接收方法执行结果反馈，格式为 (ret) => {  }。
+ * ret = { "error": 200, "message": "跳转成功", 非200, 失败，页面不存在等等}
+ *
+ */
++ (void)pushNativePage:(NSDictionary *)params callback:(nullable UniModuleKeepAliveCallback)callback;
 
 @end
 

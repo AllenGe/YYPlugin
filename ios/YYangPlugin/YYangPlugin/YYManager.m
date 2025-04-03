@@ -14,6 +14,8 @@
 //#import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 
+#import <YYangPlugin/YYangPlugin-Swift.h>
+
 @implementation YYManager
 
 static NSString *const YYCodeSuccess = @"200";
@@ -338,6 +340,97 @@ static NSString *const YYAuthMessage = @"0: NotDetermined-未决定; 1: Restrict
     
 }
 
+
++ (void)pushNativePage:(NSDictionary *)params callback:(nullable UniModuleKeepAliveCallback)callback {
+//    - pageName: 必传，页面名称，如 YYSwift，已开发存在的页面
+//    - pageTitle   可选， 页面标题（导航栏标题）
+    NSString *pageName = params[@"pageName"] ? params[@"pageName"] : @"pageName";
+    NSString *pageTitle = params[@"pageTitle"] ? params[@"pageTitle"] : @"pageTitle";
+ 
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // 获取活跃窗口
+        UIWindow *window = [YYManager findKeyWindow];
+        // 获取根视图控制器
+        UIViewController *rootVC = window.rootViewController;
+        
+        // 2. 获取当前显示的视图控制器
+        UIViewController *topVC = [YYManager topViewControllerWithRoot:window.rootViewController];
+        
+        if (@available(iOS 15.0, *)) {
+            void (^presentOrPush)(UIViewController *) = ^(UIViewController *vc) {
+                if ([rootVC isKindOfClass:[UINavigationController class]]) {
+                    [topVC.navigationController pushViewController:vc animated:YES];
+                } else {
+                    [rootVC presentViewController:vc animated:YES completion:nil];
+                }
+            };
+
+            if ([pageName isEqualToString:@"YYSwift"]) {
+                presentOrPush([[YYSwift alloc] initWithMessage:pageTitle]);
+            } else if ([pageName isEqualToString:@"YYSwift2"]) {
+                presentOrPush([[YYSwift alloc] initWithMessage:pageTitle]);
+            }
+        }
+        // 初始化包装后的 SwiftUI 页面控制器并传递参数
+//        if (@available(iOS 15.0, *)) {
+//            YYSwift *swiftVC = [[YYSwift alloc] initWithMessage:message];
+//
+//            if ([rootVC isKindOfClass:[UINavigationController class]]) {
+//                [topVC.navigationController pushViewController:swiftVC animated:YES];
+//            } else {
+//                [rootVC presentViewController:swiftVC animated:YES completion:nil];
+//            }
+//        } else {
+//            // Fallback on earlier versions
+//        }
+        
+        
+    });
+    
+}
+
+
+// 新的获取 keyWindow 方法
++ (UIWindow *)findKeyWindow {
+    if (@available(iOS 13.0, *)) {
+        // 多场景应用获取方式
+        NSSet<UIScene *> *connectedScenes = [UIApplication sharedApplication].connectedScenes;
+        for (UIScene *scene in connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]] && scene.activationState == UISceneActivationStateForegroundActive) {
+                UIWindowScene *windowScene = (UIWindowScene *)scene;
+                return windowScene.keyWindow;
+            }
+        }
+    }
+    
+    // 旧版本回退方案
+    return [UIApplication sharedApplication].windows.firstObject;
+}
+
+
++ (UIViewController *)topViewControllerWithRoot:(UIViewController *)rootVC {
+    if ([rootVC isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tab = (UITabBarController *)rootVC;
+        return [self topViewControllerWithRoot:tab.selectedViewController];
+    } else if ([rootVC isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)rootVC;
+        return [self topViewControllerWithRoot:nav.visibleViewController];
+    } else if (rootVC.presentedViewController) {
+        return [self topViewControllerWithRoot:rootVC.presentedViewController];
+    }
+    return rootVC;
+}
+
+// Present 回退方案
++ (void)presentFallback:(UIViewController *)vc from:(UIViewController *)presenter {
+    if (@available(iOS 13.0, *)) {
+        vc.modalPresentationStyle = UIModalPresentationAutomatic;
+    } else {
+        vc.modalPresentationStyle = UIModalPresentationFullScreen;
+    }
+    
+    [presenter presentViewController:vc animated:YES completion:nil];
+}
 
 //nonnull：表示 params 参数必须非空，调用时不可传递 nil。
 //
