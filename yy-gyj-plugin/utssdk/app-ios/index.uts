@@ -1,0 +1,231 @@
+// 添加在文件顶部
+// type DeviceModelMap = {
+// 	[key : string] : string
+// }
+
+// const iosDeviceMap : DeviceModelMap = {
+// 	"iPhone1,1": "iPhone",
+// 	"iPhone1,2": "iPhone 3G",
+// 	"iPhone2,1": "iPhone 3GS",
+// 	"iPhone3,1": "iPhone 4",
+// 	"iPhone3,2": "iPhone 4",
+// 	"iPhone3,3": "iPhone 4",
+// 	"iPhone4,1": "iPhone 4S",
+// 	"iPhone5,1": "iPhone 5",
+// 	"iPhone5,2": "iPhone 5",
+// 	"iPhone5,3": "iPhone 5C",
+// 	"iPhone5,4": "iPhone 5C",
+// 	"iPhone6,1": "iPhone 5S",
+// 	"iPhone6,2": "iPhone 5S",
+// 	"iPhone7,1": "iPhone 6 Plus",
+// 	"iPhone7,2": "iPhone 6",
+// 	"iPhone8,1": "iPhone 6S",
+// 	"iPhone8,2": "iPhone 6S Plus",
+// 	"iPhone8,4": "iPhone SE (1st generation)",
+// 	"iPhone9,1": "iPhone 7",
+// 	"iPhone9,2": "iPhone 7 Plus",
+// 	"iPhone9,3": "iPhone 7",
+// 	"iPhone9,4": "iPhone 7 Plus",
+// 	"iPhone10,1": "iPhone 8",
+// 	"iPhone10,2": "iPhone 8 Plus",
+// 	"iPhone10,3": "iPhone X",
+// 	"iPhone10,4": "iPhone 8",
+// 	"iPhone10,5": "iPhone 8 Plus",
+// 	"iPhone10,6": "iPhone X",
+// 	"iPhone11,2": "iPhone XS",
+// 	"iPhone11,4": "iPhone XS Max",
+// 	"iPhone11,6": "iPhone XS Max",
+// 	"iPhone11,8": "iPhone XR",
+// 	"iPhone12,1": "iPhone 11",
+// 	"iPhone12,3": "iPhone 11 Pro",
+// 	"iPhone12,5": "iPhone 11 Pro Max",
+// 	"iPhone12,8": "iPhone SE (2nd generation)",
+// 	"iPhone13,1": "iPhone 12 mini",
+// 	"iPhone13,2": "iPhone 12",
+// 	"iPhone13,3": "iPhone 12 Pro",
+// 	"iPhone13,4": "iPhone 12 Pro Max",
+// 	"iPhone14,4": "iPhone 13 mini",
+// 	"iPhone14,5": "iPhone 13",
+// 	"iPhone14,2": "iPhone 13 Pro",
+// 	"iPhone14,3": "iPhone 13 Pro Max",
+// 	"iPhone14,6": "iPhone SE (3rd generation)",
+// 	"iPhone14,7": "iPhone 14",
+// 	"iPhone14,8": "iPhone 14 Plus",
+// 	"iPhone15,2": "iPhone 14 Pro",
+// 	"iPhone15,3": "iPhone 14 Pro Max",
+// 	"iPhone15,4": "iPhone 15",
+// 	"iPhone15,5": "iPhone 15 Plus",
+// 	"iPhone16,1": "iPhone 15 Pro",
+// 	"iPhone16,2": "iPhone 15 Pro Max"
+// 	// 可以根据需要继续添加更多型号
+// };
+
+
+/**
+ * 引用 iOS 系统库，示例如下：
+ * import { UIDevice } from "UIKit";
+ * [可选实现，按需引入]
+ */
+
+
+// import { FacebookCore } from "/Frameworks/FBSDKCoreKit.xcframework";
+
+import { UIDevice } from "UIKit";
+
+/* 引入 interface.uts 文件中定义的变量 */
+import { MyApiOptions, MyApiResult, MyApi, MyApiSync } from '../interface.uts';
+
+/* 引入 unierror.uts 文件中定义的变量 */
+import { MyApiFailImpl } from '../unierror';
+
+
+
+/**
+ * 引入三方库
+ * [可选实现，按需引入]
+ *
+ * 在 iOS 平台引入三方库有以下两种方式：
+ * 1、通过引入三方库framework 或者.a 等方式，需要将 .framework 放到 ./Frameworks 目录下，将.a 放到 ./Libs 目录下。更多信息[详见](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#ios-平台原生配置)
+ * 2、通过 cocoaPods 方式引入，将要引入的 pod 信息配置到 config.json 文件下的 dependencies-pods 字段下。详细配置方式[详见](https://uniapp.dcloud.net.cn/plugin/uts-ios-cocoapods.html)
+ *
+ * 在通过上述任意方式依赖三方库后，使用时需要在文件中 import:
+ * 示例：import { LottieLoopMode	} from 'Lottie'
+ */
+
+/**
+ * UTSiOS 为平台内置对象，不需要 import 可直接调用其API，[详见](https://uniapp.dcloud.net.cn/uts/utsios.html)
+ */
+
+/**
+ * 异步方法
+ *
+ * uni-app项目中（vue/nvue）调用示例：
+ * 1、引入方法声明 import { myApi } from "@/uni_modules/uts-api"
+ * 2、方法调用
+ * myApi({
+ *   paramA: false,
+ *   complete: (res) => {
+ *      console.log(res)
+ *   }
+ * });
+ *
+ */
+export const myApi : MyApi = function (options : MyApiOptions) {
+
+	if (options.paramA == true) {
+		// 返回数据
+		const res : MyApiResult = {
+			fieldA: 85,
+			fieldB: true,
+			fieldC: 'some message'
+		};
+		options.success?.(res);
+		options.complete?.(res);
+
+	} else {
+		// 返回错误
+		let failResult = new MyApiFailImpl(9010001);
+		options.fail?.(failResult)
+		options.complete?.(failResult)
+	}
+
+}
+
+/**
+ * 同步方法
+ *
+ * uni-app项目中（vue/nvue）调用示例：
+ * 1、引入方法声明 import { myApiSync } from "@/uni_modules/uts-api"
+ * 2、方法调用
+ * myApiSync(true);
+ *
+ */
+export const myApiSync : MyApiSync = function (paramA : boolean) : MyApiResult {
+	// 返回数据，根据插件功能获取实际的返回值
+	const res : MyApiResult = {
+		fieldA: 85,
+		fieldB: paramA,
+		fieldC: 'some message'
+	};
+	return res;
+}
+
+/**
+ * 更多插件开发的信息详见：https://uniapp.dcloud.net.cn/plugin/uts-plugin.html
+ */
+
+
+// app-android 文件夹下存在Android平台原生配置，包括以下目录或文件
+// 	assets	Android平台原生assets资源目录
+// 	libs	Android平台原生引用的三方jar/aar目录
+// 	res	Android平台原生res资源目录
+// 	AndroidManifest.xml	Android平台原生应用清单文件
+// 	config.json	Android平台下的配置文件
+// 	index.uts	主入口，interface.uts/index.d.ts声明的能力在Android平台下的实现
+
+
+// app-ios 文件夹下存在iOS平台原生配置，包括以下目录或文件
+// 	Frameworks	iOS平台插件需要引用的三方 framework/xcframework 依赖库存放目录
+// 	Libs	iOS平台插件需要引用的三方 .a 依赖库存放目录
+// 	Resources	iOS平台插件需要引用的资源文件存放目录
+// 	config.json	iOS平台原生工程的配置文件
+// 	index.uts	主入口，interface.uts/index.d.ts声明的能力在iOS平台下的实现
+// 	Info.plist	iOS平台插件需要添加到原生工程Info.plist中的配置文件
+// 	PrivacyInfo.xcprivacy	iOS平台插件隐私清单文件
+// 	UTS.entitlements	iOS平台插件需要添加到原生工程 entitlements 文件中的配置文件
+
+
+
+export const callUtsTest : MyApiSync = function (paramA : boolean) : MyApiResult {
+	// 返回数据，根据插件功能获取实际的返回值
+	const res : MyApiResult = {
+		fieldA: 85,
+		fieldB: paramA,
+		fieldC: 'some message'
+	};
+	return res;
+}
+
+
+type GetBatteryInfoOptions = {
+	success ?: (res : UTSJSONObject) => void;
+	fail ?: (res : UTSJSONObject) => void;
+	complete ?: (res : UTSJSONObject) => void;
+};
+
+
+/**
+ * 导出 获取电量方法
+ */
+export function getBatteryInfo(options : GetBatteryInfoOptions) {
+
+	// 开启电量检测
+	UIDevice.current.isBatteryMonitoringEnabled = true
+
+	// 返回数据
+	const res = {
+		errMsg: "getBatteryInfo:ok",
+		level: Number(UIDevice.current.batteryLevel * 100),
+		isCharging: UIDevice.current.batteryState == UIDevice.BatteryState.charging,
+	};
+	options.success?.(res);
+	options.complete?.(res);
+}
+
+/**
+ * 导出 获取电量方法
+ */
+export function getBatteryLevel() {
+	// 开启电量检测
+	UIDevice.current.isBatteryMonitoringEnabled = true
+
+	let level = Number(UIDevice.current.batteryLevel * 100)
+	return level
+}
+
+
+export function getDeviceInfo() {
+
+	let model = String(UIDevice.current.name + " " + UIDevice.current.systemName + UIDevice.current.systemVersion)
+	return model
+}
